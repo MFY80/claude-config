@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "plugins": {
+    "superpowers@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\Administrator\\.claude\\plugins\\cache\\claude-plugins-official\\superpowers\\6.3.0",
+        "version": "6.3.0",
+        "installedAt": "2026-09-03T11:13:58.495Z",
+        "lastUpdated": "2026-09-03T11:13:58.495Z",
+        "gitCommitSha": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797"
+      }
+    ],
+    "github@claude-plugins-official": [
+      {
+        "scope": "user",
+        "installPath": "C:\\Users\\Administrator\\.claude\\plugins\\cache\\claude-plugins-official\\github\\ed404106fcd8",
+        "version": "ed404106fcd8",
+        "installedAt": "2026-09-03T12:13:18.835Z",
+        "lastUpdated": "2026-09-03T12:13:18.835Z"
+      }
+    ]
+  }
+}

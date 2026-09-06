@@ -1,0 +1,59 @@
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "__CLAUDE_API_TOKEN__",
+    "ANTHROPIC_BASE_URL": "https://open.bigmodel.cn/api/anthropic",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-5.3-flash[1m]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-5.3-flash[1m]",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-5.3-flash[1m]",
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "1000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "API_TIMEOUT_MS": "3000000"
+  },
+  "model": "haiku",
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:/Users/Administrator/.claude/claude-toast.ps1\"",
+            "timeout": 15,
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:/Users/Administrator/.claude/claude-toast.ps1\" \"Task completed - Claude Code is done\"",
+            "timeout": 15,
+            "async": true
+          },
+          {
+            "type": "command",
+            "command": "pwsh.exe -NoProfile -NoLogo -File \"C:/Users/Administrator/.claude/claude-token-usage.ps1\"",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "pwsh.exe -NoProfile -NoLogo -File \"C:/Users/Administrator/.claude/cc-statusline.ps1\""
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "github@claude-plugins-official": true
+  },
+  "modelSettings": {
+    "glm-5.3-flash": {
+      "effortLevel": "high"
+    }
+  },
+  "skipDangerousModePermissionPrompt": true
+}
