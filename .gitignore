@@ -1,0 +1,6 @@
+# secrets must never be committed here
+.sync-token
+*.token
+# OS junk
+Thumbs.db
+Desktop.ini
