@@ -21,7 +21,7 @@ $tp  = $hook.transcript_path
 $sid = $hook.session_id
 if (-not $tp -or -not (Test-Path -LiteralPath $tp)) { exit 0 }
 
-. 'C:/Users/Administrator/.claude/cc-token-scan.ps1'
+. '__CLAUDE_DIR__/cc-token-scan.ps1'
 $stats = Get-TokenStats -TranscriptPath $tp -Sid $sid -IncludeSubagents
 $iTok = [long]$stats.i; $oTok = [long]$stats.o; $cTok = [long]$stats.c; $wTok = [long]$stats.w
 $total = $iTok + $oTok + $cTok + $wTok

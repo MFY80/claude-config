@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:/Users/Administrator/.claude/claude-toast.ps1\"",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"__CLAUDE_DIR__/claude-toast.ps1\"",
             "timeout": 15,
             "async": true
           }
@@ -29,13 +29,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:/Users/Administrator/.claude/claude-toast.ps1\" \"Task completed - Claude Code is done\"",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"__CLAUDE_DIR__/claude-toast.ps1\" \"Task completed - Claude Code is done\"",
             "timeout": 15,
             "async": true
           },
           {
             "type": "command",
-            "command": "pwsh.exe -NoProfile -NoLogo -File \"C:/Users/Administrator/.claude/claude-token-usage.ps1\"",
+            "command": "pwsh.exe -NoProfile -NoLogo -File \"__CLAUDE_DIR__/claude-token-usage.ps1\"",
             "timeout": 60
           }
         ]
@@ -44,7 +44,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "pwsh.exe -NoProfile -NoLogo -File \"C:/Users/Administrator/.claude/cc-statusline.ps1\""
+    "command": "pwsh.exe -NoProfile -NoLogo -File \"__CLAUDE_DIR__/cc-statusline.ps1\""
   },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,

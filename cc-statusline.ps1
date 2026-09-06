@@ -21,7 +21,7 @@ $tp  = $s.transcript_path
 $sid = $s.session_id
 $model = $s.model.display_name
 
-. 'C:/Users/Administrator/.claude/cc-token-scan.ps1'
+. '__CLAUDE_DIR__/cc-token-scan.ps1'
 $stats = Get-TokenStats -TranscriptPath $tp -Sid $sid -IncludeSubagents
 
 # last completed turn (written by the Stop hook)

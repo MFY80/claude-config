@@ -10,7 +10,11 @@
 
     The real API token never enters this repo: on push it is replaced with the
     placeholder below; on pull it is read back from %USERPROFILE%\.claude\.sync-token
-    (git-ignored, lives outside this repo). Sync is last-write-wins, no merging.
+    (git-ignored, lives outside this repo). Absolute paths to ~/.claude inside
+    settings.json and the hook/statusline scripts are likewise replaced with
+    __CLAUDE_DIR__ on push and restored to the local machine's path on pull, so
+    hooks and the statusline work on any username/drive. Sync is
+    last-write-wins, no merging.
 #>
 param(
     [Parameter(Position = 0)]
@@ -22,8 +26,10 @@ $ErrorActionPreference = 'Stop'
 
 $Repo        = $PSScriptRoot
 $ClaudeDir   = Join-Path $HOME '.claude'
+$ClaudeDirFwd = $ClaudeDir -replace '\\', '/'
 $TokenFile   = Join-Path $ClaudeDir '.sync-token'
 $Placeholder = '__CLAUDE_API_TOKEN__'
+$PathPlaceholder = '__CLAUDE_DIR__'
 $Utf8NoBom   = New-Object System.Text.UTF8Encoding($false)
 
 # Files synced verbatim (repo-relative, also relative to ~/.claude)
@@ -36,6 +42,15 @@ $Files = @(
     'claude-token-usage.ps1',
     'plugins\installed_plugins.json',
     'plugins\known_marketplaces.json'
+)
+# Files that may embed absolute paths to ~/.claude (rewritten to/from
+# $PathPlaceholder on push/pull so the repo stays device-independent)
+$PathFiles = @(
+    'settings.json',
+    'cc-statusline.ps1',
+    'cc-token-scan.ps1',
+    'claude-toast.ps1',
+    'claude-token-usage.ps1'
 )
 # Distributions synced wholesale
 $Dirs = @('skills')
@@ -75,6 +90,31 @@ function ConvertTo-RepoSettings([string]$Text) {
 
 function ConvertTo-LocalSettings([string]$Text, [string]$Token) {
     return [regex]::Replace($Text, '("ANTHROPIC_AUTH_TOKEN"\s*:\s*")[^"]*(")', "`${1}$Token`${2}")
+}
+
+function ConvertTo-RepoPaths([string]$Text) {
+    # this machine's ~/.claude (either separator style) -> placeholder
+    $pat = '(?i)' + [regex]::Escape($ClaudeDirFwd) + '|' + [regex]::Escape($ClaudeDir)
+    return [regex]::Replace($Text, $pat, $PathPlaceholder)
+}
+
+function ConvertTo-LocalPaths([string]$Text) {
+    return $Text.Replace($PathPlaceholder, $ClaudeDirFwd)
+}
+
+function Test-HasBom([string]$Path) {
+    $b = New-Object byte[] 3
+    $fs = [System.IO.File]::OpenRead($Path)
+    try { $n = $fs.Read($b, 0, 3) } finally { $fs.Close() }
+    return ($n -eq 3 -and $b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF)
+}
+
+function Write-TextLike([string]$Path, [string]$Text) {
+    # rewrite text preserving the file's existing BOM state (PS 5.1 needs a BOM
+    # to read UTF-8 .ps1 as UTF-8; without it non-ASCII scripts misparse as GBK)
+    $enc = $Utf8NoBom
+    if (Test-Path $Path) { $enc = New-Object System.Text.UTF8Encoding((Test-HasBom $Path)) }
+    [System.IO.File]::WriteAllText($Path, $Text, $enc)
 }
 
 function Copy-FileTo([string]$Src, [string]$Dst) {
@@ -130,13 +170,18 @@ function Invoke-Push {
     }
     Push-Memory
 
-    $sp = Join-Path $Repo 'settings.json'
-    if (Test-Path $sp) {
-        $raw = Read-AllText $sp
-        $clean = ConvertTo-RepoSettings $raw
+    # device-specific content must not enter the repo:
+    # token -> $Placeholder, absolute ~/.claude paths -> $PathPlaceholder
+    foreach ($f in $PathFiles) {
+        $rp = Join-Path $Repo $f
+        if (-not (Test-Path $rp)) { continue }
+        $raw = Read-AllText $rp
+        $clean = $raw
+        if ($f -eq 'settings.json') { $clean = ConvertTo-RepoSettings $clean }
+        $clean = ConvertTo-RepoPaths $clean
         if ($clean -ne $raw) {
-            Write-AllText $sp $clean
-            Write-Host "  sanitized: settings.json (token -> $Placeholder)"
+            Write-TextLike $rp $clean
+            Write-Host "  sanitized: $f (token/path -> placeholders)"
         }
     }
 
@@ -190,11 +235,21 @@ function Invoke-Pull {
     }
     Pull-Memory
 
+    # restore device-local paths inside settings/scripts (placeholder -> this
+    # machine's ~/.claude), so hooks/statusline work regardless of username
+    foreach ($f in $PathFiles) {
+        $p = Get-LocalPath $f
+        if (-not (Test-Path $p)) { continue }
+        $t = Read-AllText $p
+        $t2 = ConvertTo-LocalPaths $t
+        if ($t2 -ne $t) { Write-TextLike $p $t2; Write-Host "  localized: $f" }
+    }
+
     # restore real token into local settings.json
-    $lp = Join-Path $ClaudeDir 'settings.json'
+    $lp = Get-LocalPath 'settings.json'
     if (Test-Path $lp) {
         $t = Read-AllText $lp
-        Write-AllText $lp (ConvertTo-LocalSettings $t $token)
+        Write-TextLike $lp (ConvertTo-LocalSettings $t $token)
     }
     Write-Host 'pulled to ~/.claude.' -ForegroundColor Green
 }

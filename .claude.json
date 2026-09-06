@@ -1,5 +1,5 @@
 {
-  "numStartups": 64,
+  "numStartups": 65,
   "installMethod": "global",
   "hasSeenTasksHint": true,
   "customApiKeyResponses": {
@@ -13,7 +13,7 @@
     "new-user-warmup": 1,
     "plan-mode-for-complex-tasks": 2,
     "color-when-multi-clauding": 51,
-    "memory-command": 49,
+    "memory-command": 65,
     "theme-command": 46,
     "powershell-tool-env": 50,
     "powerup-onboarding": 5,
@@ -28,7 +28,7 @@
     "default-permission-mode-config": 50,
     "permissions": 51,
     "continue": 53,
-    "rename-conversation": 47,
+    "rename-conversation": 64,
     "custom-commands": 16,
     "shift-tab": 54,
     "image-paste": 60,
@@ -44,7 +44,6 @@
     "git-worktrees": 51
   },
   "promptQueueUseCount": 28,
-  "showExpandedTodos": true,
   "cachedGrowthBookFeatures": {
     "tengu_tangerine_ladder_boost": true,
     "tengu_prompt_suggestion": true,
@@ -918,7 +917,7 @@
   "hasResetAutoModeOptInForDefaultOffer": true,
   "hasCompletedOnboarding": true,
   "lastOnboardingVersion": "2.1.251",
-  "lastReleaseNotesSeen": "2.1.258",
+  "lastReleaseNotesSeen": "2.1.263",
   "projects": {
     "C:/Users/Administrator": {
       "allowedTools": [],
@@ -1072,8 +1071,8 @@
       "lastAPIDuration": 0,
       "lastAPIDurationWithoutRetries": 0,
       "lastToolDuration": 0,
-      "lastDuration": 12297494,
-      "lastStartTime": 1788619069819,
+      "lastDuration": 9412,
+      "lastStartTime": 1788681488884,
       "lastLinesAdded": 0,
       "lastLinesRemoved": 0,
       "lastTotalInputTokens": 0,
@@ -1082,27 +1081,32 @@
       "lastTotalCacheReadInputTokens": 0,
       "lastTotalWebSearchRequests": 0,
       "lastGracefulShutdown": false,
-      "lastVersionBase": "2.1.258",
+      "lastVersionBase": "2.1.263",
       "lastModelUsage": {},
-      "lastSessionId": "311e4da1-66bb-4acc-97f9-d4d77c2a611c",
+      "lastSessionId": "6e7b9b76-1b82-4a45-b6ec-d676a21801ff",
       "lastSessionMetrics": {
-        "frame_duration_ms_count": 50,
-        "frame_duration_ms_min": 0.07029999978840351,
-        "frame_duration_ms_max": 5.813699999999926,
-        "frame_duration_ms_avg": 0.7903499999987389,
-        "frame_duration_ms_p50": 0.653700000140816,
-        "frame_duration_ms_p95": 1.8155400000754065,
-        "frame_duration_ms_p99": 4.116781000002511,
-        "hook_duration_ms_count": 1,
-        "hook_duration_ms_min": 924,
-        "hook_duration_ms_max": 924,
-        "hook_duration_ms_avg": 924,
-        "hook_duration_ms_p50": 924,
-        "hook_duration_ms_p95": 924,
-        "hook_duration_ms_p99": 924
-      },
-      "lastFpsAverage": 0,
-      "lastFpsLow1Pct": 172.01
+        "frame_duration_ms_count": 10450,
+        "frame_duration_ms_min": 0.043000000063329935,
+        "frame_duration_ms_max": 966.9410999999382,
+        "frame_duration_ms_avg": 1.2493316363642337,
+        "frame_duration_ms_p50": 0.5861499999882653,
+        "frame_duration_ms_p95": 3.421645000041452,
+        "frame_duration_ms_p99": 12.811268999937452,
+        "hook_duration_ms_count": 31,
+        "hook_duration_ms_min": 0,
+        "hook_duration_ms_max": 1475,
+        "hook_duration_ms_avg": 69.7741935483871,
+        "hook_duration_ms_p50": 0,
+        "hook_duration_ms_p95": 342,
+        "hook_duration_ms_p99": 1235.8999999999994,
+        "pre_tool_hook_duration_ms_count": 41,
+        "pre_tool_hook_duration_ms_min": 0,
+        "pre_tool_hook_duration_ms_max": 1,
+        "pre_tool_hook_duration_ms_avg": 0.12195121951219512,
+        "pre_tool_hook_duration_ms_p50": 0,
+        "pre_tool_hook_duration_ms_p95": 1,
+        "pre_tool_hook_duration_ms_p99": 1
+      }
     }
   },
   "closedIssuesLastChecked": 1788360370934,
@@ -1112,7 +1116,7 @@
     "new-user-warmup": 1,
     "plan-mode-for-complex-tasks": 1,
     "color-when-multi-clauding": 2,
-    "memory-command": 4,
+    "memory-command": 5,
     "theme-command": 3,
     "powershell-tool-env": 5,
     "powerup-onboarding": 1,
@@ -1127,7 +1131,7 @@
     "default-permission-mode-config": 4,
     "permissions": 4,
     "continue": 4,
-    "rename-conversation": 3,
+    "rename-conversation": 4,
     "custom-commands": 1,
     "shift-tab": 4,
     "image-paste": 3,
@@ -1170,9 +1174,9 @@
   },
   "pluginUsage": {
     "superpowers@claude-plugins-official": {
-      "usageCount": 16,
-      "lastUsedAt": 1788679669986,
-      "lastUsedNumStartups": 64
+      "usageCount": 17,
+      "lastUsedAt": 1788681489782,
+      "lastUsedNumStartups": 65
     },
     "github@claude-plugins-official": {
       "usageCount": 0,
