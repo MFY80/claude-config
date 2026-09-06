@@ -27,6 +27,7 @@ $ErrorActionPreference = 'Stop'
 $Repo        = $PSScriptRoot
 $ClaudeDir   = Join-Path $HOME '.claude'
 $ClaudeDirFwd = $ClaudeDir -replace '\\', '/'
+$ClaudeDirJson = $ClaudeDir.Replace('\', '\\')   # backslashes doubled, as they appear inside JSON string values
 $TokenFile   = Join-Path $ClaudeDir '.sync-token'
 $Placeholder = '__CLAUDE_API_TOKEN__'
 $PathPlaceholder = '__CLAUDE_DIR__'
@@ -50,7 +51,9 @@ $PathFiles = @(
     'cc-statusline.ps1',
     'cc-token-scan.ps1',
     'claude-toast.ps1',
-    'claude-token-usage.ps1'
+    'claude-token-usage.ps1',
+    'plugins\installed_plugins.json',
+    'plugins\known_marketplaces.json'
 )
 # Distributions synced wholesale
 $Dirs = @('skills')
@@ -93,8 +96,10 @@ function ConvertTo-LocalSettings([string]$Text, [string]$Token) {
 }
 
 function ConvertTo-RepoPaths([string]$Text) {
-    # this machine's ~/.claude (either separator style) -> placeholder
-    $pat = '(?i)' + [regex]::Escape($ClaudeDirFwd) + '|' + [regex]::Escape($ClaudeDir)
+    # this machine's ~/.claude in every textual form it may appear in
+    # (forward slashes, backslashes, JSON-escaped backslashes) -> placeholder
+    $pat = '(?i)' + [regex]::Escape($ClaudeDirFwd) + '|' +
+        [regex]::Escape($ClaudeDir) + '|' + [regex]::Escape($ClaudeDirJson)
     return [regex]::Replace($Text, $pat, $PathPlaceholder)
 }
 
