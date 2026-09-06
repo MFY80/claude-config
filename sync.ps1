@@ -279,11 +279,16 @@ function Invoke-Status {
         if (-not (Test-Path $local)) { $diffs += "only in repo:   $f"; continue }
         if (-not (Test-Path $repoF)) { $diffs += "only local:    $f"; continue }
         if ((Get-FileHash $local).Hash -ne (Get-FileHash $repoF).Hash) {
+            # repo copies hold token/path placeholders — compare against a
+            # sanitized version of the local file, otherwise they always differ
             if ($f -eq 'settings.json') {
-                # repo copy holds a placeholder, compare against sanitized local
-                if ((Read-AllText $repoF) -ne (ConvertTo-RepoSettings (Read-AllText $local))) { $diffs += "differ:        $f" }
+                $same = (Read-AllText $repoF) -ceq (ConvertTo-RepoSettings (ConvertTo-RepoPaths (Read-AllText $local)))
             }
-            else { $diffs += "differ:        $f" }
+            elseif ($PathFiles -contains $f) {
+                $same = (Read-AllText $repoF) -ceq (ConvertTo-RepoPaths (Read-AllText $local))
+            }
+            else { $same = $false }
+            if (-not $same) { $diffs += "differ:        $f" }
         }
     }
     foreach ($d in $Dirs) {
