@@ -42,7 +42,10 @@ $Files = @(
     'claude-toast.ps1',
     'claude-token-usage.ps1',
     'plugins\installed_plugins.json',
-    'plugins\known_marketplaces.json'
+    'plugins\known_marketplaces.json',
+    'shell\Microsoft.PowerShell_profile.ps1',
+    'shell\bashrc',
+    'shell\cc.cmd'
 )
 # Files that may embed absolute paths to ~/.claude (rewritten to/from
 # $PathPlaceholder on push/pull so the repo stays device-independent)
@@ -53,7 +56,10 @@ $PathFiles = @(
     'claude-toast.ps1',
     'claude-token-usage.ps1',
     'plugins\installed_plugins.json',
-    'plugins\known_marketplaces.json'
+    'plugins\known_marketplaces.json',
+    'shell\Microsoft.PowerShell_profile.ps1',
+    'shell\bashrc',
+    'shell\cc.cmd'
 )
 # Distributions synced wholesale
 $Dirs = @('skills')
@@ -61,6 +67,9 @@ $Dirs = @('skills')
 # Repo-relative files whose source lives outside ~/.claude
 $Overrides = @{
     '.claude.json' = Join-Path $HOME '.claude.json'
+    'shell\Microsoft.PowerShell_profile.ps1' = Join-Path (Join-Path $HOME 'Documents\PowerShell') 'Microsoft.PowerShell_profile.ps1'
+    'shell\bashrc' = Join-Path $HOME '.bashrc'
+    'shell\cc.cmd' = Join-Path (Join-Path $env:APPDATA 'npm') 'cc.cmd'
 }
 
 function Get-LocalPath([string]$Rel) {
@@ -216,9 +225,9 @@ function Invoke-Pull {
         Write-Host "token 已缓存到 $TokenFile" -ForegroundColor Green
     }
 
-    # back up local settings/state that is about to be overwritten
+    # back up any manifest file (that exists locally and differs) before overwrite
     $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-    foreach ($f in @('settings.json', '.claude.json')) {
+    foreach ($f in $Files) {
         $local = Get-LocalPath $f
         $incoming = Join-Path $Repo $f
         if ((Test-Path $local) -and (Test-Path $incoming) -and

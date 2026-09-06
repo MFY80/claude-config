@@ -41,7 +41,7 @@
     "install-slack-app": 17,
     "desktop-shortcut": 17,
     "frontend-design-plugin": 58,
-    "git-worktrees": 51
+    "git-worktrees": 65
   },
   "promptQueueUseCount": 28,
   "cachedGrowthBookFeatures": {
@@ -1144,7 +1144,7 @@
     "install-slack-app": 1,
     "desktop-shortcut": 1,
     "frontend-design-plugin": 2,
-    "git-worktrees": 1
+    "git-worktrees": 2
   },
   "hasOpenedAgentsView": true,
   "agentLastUsed": {

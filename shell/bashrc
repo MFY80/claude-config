@@ -1,0 +1,25 @@
+# PowerShell 7 wrapper with UTF-8 output enforced.
+# Usage:  psh '<PowerShell code>'          e.g. psh 'Get-Date; $PSVersionTable.PSVersion'
+psh() { pwsh.exe -NoProfile -NoLogo -Command "[Console]::OutputEncoding=[Text.Encoding]::UTF8; $*"; }
+
+# Launch Claude Code with bypassPermissions available in the Shift+Tab cycle (not active by default).
+cc() { claude --allow-dangerously-skip-permissions "$@"; }
+
+# Outbound proxy (VPN mixed port 7897) for external downloads; bigmodel.cn stays direct.
+proxyon() {
+    export HTTP_PROXY=http://127.0.0.1:7897 HTTPS_PROXY=http://127.0.0.1:7897
+    export http_proxy=$HTTP_PROXY https_proxy=$HTTP_PROXY
+    export NO_PROXY=localhost,127.0.0.1,::1,bigmodel.cn no_proxy=$NO_PROXY
+}
+proxyoff() { unset HTTP_PROXY HTTPS_PROXY http_proxy https_proxy NO_PROXY no_proxy ALL_PROXY all_proxy; }
+
+# Launch Claude Code with the proxy preloaded (falls back to plain cc if 7897 is dead).
+ccp() {
+    if (exec 3<>/dev/tcp/127.0.0.1/7897) 2>/dev/null; then
+        proxyon
+    else
+        echo "ccp: 127.0.0.1:7897 not reachable - starting WITHOUT proxy (start your VPN, or use cc)." >&2
+        proxyoff
+    fi
+    claude --allow-dangerously-skip-permissions "$@"
+}
