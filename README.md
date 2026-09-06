@@ -34,10 +34,12 @@ cd ~\claude-config
 ## 新设备部署
 
 ```powershell
-git clone https://github.com/MFY80/claude-config.git ~\claude-config
-cd ~\claude-config
+git clone https://github.com/MFY80/claude-config.git "$env:USERPROFILE\claude-config"
+cd "$env:USERPROFILE\claude-config"
 .\sync.ps1 pull     # 首次运行会提示粘贴 ANTHROPIC_AUTH_TOKEN
 ```
+
+> 目标目录必须不存在或为空，否则 git clone 报 "already exists and is not an empty directory"。用 `$env:USERPROFILE` 显式路径，不要用 `~`（PowerShell 传外部命令时 `~` 可能不展开，git 会创建字面名为 `~` 的目录）。
 
 Token 会缓存到 `~/.claude/.sync-token`（在本仓库之外、不进 git），之后 pull 不再询问。
 
