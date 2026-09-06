@@ -11,9 +11,12 @@ Claude Code 用户配置的跨设备同步仓库（私有）。本机配置位�
 | `cc-*.ps1` / `claude-*.ps1` | 同名文件 | 自写脚本（状态栏、通知、token 扫描、用量统计） |
 | `skills/` | `skills/` | 自定义技能 |
 | `plugins/*.json` | `plugins/installed_plugins.json`、`known_marketplaces.json` | 插件清单，安装路径已脱敏（缓存本体不同步，新设备自动重新下载） |
+| `shell/Microsoft.PowerShell_profile.ps1` | `Documents\PowerShell\` 同名文件 | pwsh 配置：`cc`（附加 `--allow-dangerously-skip-permissions`，bypass 进入 Shift+Tab 权限轮换而非默认模式）、`ccp`（代理出口启动） |
+| `shell/bashrc` | `~/.bashrc` | Git Bash：`psh`、`cc`、`proxyon`/`proxyoff`、`ccp` |
+| `shell/cc.cmd` | `%APPDATA%\npm\cc.cmd` | cmd 下的 `cc` 入口 |
 | `memory/<项目slug>/` | `projects/<slug>/memory/` | 各项目的持久记忆 |
 
-不同步：会话记录（`projects/` 正文）、`history.jsonl`、缓存、快照等运行时数据。
+不同步：会话记录（`projects/` 正文）、`history.jsonl`、缓存、快照等运行时数据；`Documents\PowerShell\profile.ps1`（conda init，含本机 anaconda 路径，有 Test-Path 保护故新设备无副作用）。
 
 ## 日常使用
 

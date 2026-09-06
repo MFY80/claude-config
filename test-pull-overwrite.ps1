@@ -17,9 +17,16 @@ Set-Content (Join-Path $fclaude 'plugins\installed_plugins.json') '{ "version": 
 Set-Content (Join-Path $fclaude 'untracked.txt') 'not part of the sync manifest' -Encoding UTF8
 Set-Content (Join-Path $fclaude '.sync-token') 'DUMMYTOKEN' -Encoding UTF8   # skip interactive prompt
 
+# pre-existing shell configs on the fake device
+New-Item (Join-Path $fake 'Documents\PowerShell') -ItemType Directory -Force | Out-Null
+New-Item (Join-Path $fake 'AppData\Roaming\npm') -ItemType Directory -Force | Out-Null
+Set-Content (Join-Path $fake 'Documents\PowerShell\Microsoft.PowerShell_profile.ps1') '# new-device-profile' -Encoding UTF8
+Set-Content (Join-Path $fake '.bashrc') '# new-device-bashrc' -Encoding UTF8
+Set-Content (Join-Path $fake 'AppData\Roaming\npm\cc.cmd') 'rem new-device-cc' -Encoding UTF8
+
 # --- 2. run the REAL pull logic against the fake home ---
 $src = [IO.File]::ReadAllText((Join-Path $repo 'sync.ps1'))
-$src = $src.Replace('$HOME', '$env:CC_FAKE_HOME').Replace('$PSScriptRoot', "'$repo'")
+$src = $src.Replace('$HOME', '$env:CC_FAKE_HOME').Replace('$env:APPDATA', "'$(Join-Path $fake 'AppData\Roaming')'").Replace('$PSScriptRoot', "'$repo'")
 $fakeSync = Join-Path $env:TEMP 'cc_sync_fake.ps1'
 [IO.File]::WriteAllText($fakeSync, $src, [Text.UTF8Encoding]::new($true))
 $env:CC_FAKE_HOME = $fake
@@ -53,6 +60,13 @@ Check 'plugin manifest paths localized' ($p -match [regex]::Escape($fwd) -and $p
 
 Check 'file outside manifest untouched (untracked.txt)' ((Get-Content -Raw (Join-Path $fclaude 'untracked.txt')) -match 'not part')
 Check 'memory pulled into projects\<slug>\memory' (Test-Path (Join-Path $fclaude 'projects\D--cc-workspace\memory\MEMORY.md'))
+
+$prof = Get-Content -Raw (Join-Path $fake 'Documents\PowerShell\Microsoft.PowerShell_profile.ps1')
+Check 'pwsh profile overwritten with repo version (cc func present)' ($prof -match 'function cc' -and $prof -notmatch 'new-device-profile')
+$bprof = Get-ChildItem (Join-Path $fclaude 'backups\sync-*\shell\Microsoft.PowerShell_profile.ps1') -ErrorAction SilentlyContinue
+Check 'old pwsh profile backed up before overwrite' ($bprof -and (Get-Content -Raw $bprof[0].FullName) -match 'new-device-profile')
+Check 'bashrc overwritten with repo version' (((Get-Content -Raw (Join-Path $fake '.bashrc')) -match 'cc\(\)') -and ((Get-Content -Raw (Join-Path $fake '.bashrc')) -notmatch 'new-device-bashrc'))
+Check 'cc.cmd written to fake APPDATA npm dir' ((Get-Content -Raw (Join-Path $fake 'AppData\Roaming\npm\cc.cmd')) -match 'claude')
 
 Write-Host ("`nresult: $pass passed, $fail failed")
 Remove-Item $fake -Recurse -Force -ErrorAction SilentlyContinue
